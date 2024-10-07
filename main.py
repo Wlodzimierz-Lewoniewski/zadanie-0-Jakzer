@@ -1,9 +1,31 @@
-#Przykład otrzymania wartości wprowadzonej przy użyciu funkcji input().
-wyraz=input()
+import regex as re
+import pandas as pd
 
-#W celu poprawnego działania kodu w ramach GitHub Classroom warto dodatkowo użyć funkcję strip()
-#To pozwoli na usunięcie spacji oraz innych "spacjopodobnych" znaków (tabulacja \t', przejście do nowej linii '\n' lub '\r' etc.) z "głowy" i "ogona" (lewej i prawej części wyrazu).
-wyraz=wyraz.strip()
-
-#Wydruk na ekranie (w konsoli)
-print ('Ten wyraz został wprowadzony:', wyraz)
+docs=[]
+queries = []
+n_doc=input("liczba dokumentow")
+for i in range(int(n_doc)):
+    docs.append(input("doc"))
+n_query=input("liczba query")
+for i in range(int(n_query)):
+    queries.append(input("query"))
+records =[]
+def preprocess_doc(text):
+    text = "".join(re.findall(r"[\w\s]",text))
+    text = re.sub(r"\s",' ',text).strip()
+    text = re.sub(r"\s+",' ',text).lower().split()
+    return text
+docs = [preprocess_doc(doc) for doc in docs]
+for query in queries:
+    records = []
+    for doc in docs:
+        records.append(
+            {
+                'doc':" ".join(doc),
+                'count':doc.count(query)
+            }
+        )
+    df =pd.DataFrame(records)
+    df= df[df['count']!=0]
+    df=df.sort_values(by=['count','doc'], ascending=[False,True])
+    print(list(df.index))
