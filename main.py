@@ -26,6 +26,6 @@ for query in queries:
             }
         )
     df =pd.DataFrame(records)
-    df= df[df['count']!=0]
-    df=df.sort_values(by=['count','doc'], ascending=[False,True])
-    print(list(df.index))
+    df = df[df['count'] != 0].reset_index()
+    df = df.sort_values(by=['count', 'index'], ascending=[False, True])
+    print(list(df['index'].to_list()))
